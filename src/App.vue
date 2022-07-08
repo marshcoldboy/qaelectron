@@ -1,7 +1,6 @@
 <template>
   <div>
     <QA></QA>
-    <TheCalculator></TheCalculator>
   </div>
 </template>
 
@@ -12,12 +11,11 @@ import axiosRetry from "axios-retry";
 
 const MIN_API_VERSION = "1.1.0";
 
-import TheCalculator from "./components/TheCalculator.vue";
 import QA from "./components/QA.vue";
 
 export default {
   name: "App",
-  components: { TheCalculator,QA},
+  components: { QA},
   data() {
     return {
       appPath: "",

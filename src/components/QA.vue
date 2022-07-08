@@ -1,60 +1,33 @@
 <template>
-  <h1>问答页面</h1>
-  <el-container>
-    <el-container>
-      <el-aside width="400px">
-        <p>请输入您的问题：</p>
-        <el-input
-            class="question"
-            v-model="inputQuestion"
-            autosize
-            type="textarea"
-            placeholder="Please input"
-        />
-        <p></p>
-        <el-row type="flex">
-          <el-button type="success" @click="question">发起提问</el-button>
-          <el-button type="success" @click="queryPath = true"
-          >查询路径</el-button
-          >
-          <el-button type="success" @click="dialogVisible = true"
-          >问题样例</el-button
-          >
-        </el-row>
-      </el-aside>
-      <el-main>
-        <table class="demo-border">
-          <tbody>
-          <tr>
-            <td class="text">问题：</td>
-            <td class="line">变压器有哪些类型？</td>
-          </tr>
-          <tr>
-            <td class="text">答案：</td>
-            <td class="line">油浸变压器、SF6气体绝缘变压器</td>
-          </tr>
-          <tr>
-            <td class="text">问题：</td>
-            <td class="line">
-              主变的风冷冷却器控制箱漏油,如何界定为危急缺陷？
-            </td>
-          </tr>
-          <tr>
-            <td class="text">答案：</td>
-            <td class="line">
-              {{ result }}
-            </td>
-          </tr>
-          </tbody>
-        </table>
-      </el-main>
-    </el-container>
-  </el-container>
+  <el-card class="box-card">
+    <template #header>
+      <span style="font-weight: bold;font-size: 15px">电力缺陷问答系统</span>
+    </template>
+    <div id="dialog_container">
+      <div v-for="oneDialog in text_dialog" :key="oneDialog">
+        <el-divider content-position="left">{{ user_name }} --{{ oneDialog.time }}</el-divider>
+        <span id="question_card" style="font-size: 15px">{{ oneDialog.question }}</span>
+        <el-divider content-position="right">回答</el-divider>
+        <span id="answer_card">
+              <div style="font-size: 15px" v-html="oneDialog.answer"></div>
+            </span>
+      </div>
+    </div>
+    <el-divider content-position="right"></el-divider>
+    <el-input
+        type="textarea"
+        :autosize="{ minRows: 2, maxRows: 4}"
+        placeholder="尝试输入，上市公司名称，如：格力空调\海澜之家最近上涨吗？平安银行估值怎么样？"
+        v-model="txt_question"
+    >
+    </el-input>
+    <el-divider content-position="right">
+      <el-button @click="ask_question()">提问</el-button>
+    </el-divider>
+  </el-card>
 </template>
 
 <script>
-// import axios from "axios";
-
 import axios from "axios";
 
 export default {
@@ -62,15 +35,37 @@ export default {
   data(){
     return{
       inputQuestion:"请输入您的问题",
-      result:"答案"
+      result:"答案",
+      user_name: '默认用户',
+      txt_question: '',
+      text_dialog: [],
     }
   },
   methods: {
-    question: function () {
+    scrollToBottom: function () {
+      // 问答的框，每次提问完滚动条滚动到最下方新的消息
+      this.$nextTick(() => {
+        const div = document.getElementById('dialog_container')
+        div.scrollTop = div.scrollHeight
+      })
+
+    },
+    answer: function () {
+      const myDate = new Date();
+      this.text_dialog.push({time: myDate.toLocaleString(), question: this.txt_question, answer: this.result})
+      this.scrollToBottom();
+    },
+    ask_question() {
+      // 提问
+      if (this.txt_question === '') {
+        alert("输入不能为空")
+        return
+      }
+      // 添加一条 问答对话
       if (this.inputQuestion != "") {
-        let reqObj = { expression: this.inputQuestion };
+        let reqObj = { expression: this.txt_question };
         axios
-            .post(`${this.SERVERURL}/qa/question`, reqObj)
+            .post(`${this.SERVERURL}/qa/get`, reqObj)
             .then((response) => {
               this.result = `Result = ${response.data}`;
             })
@@ -78,11 +73,30 @@ export default {
               console.error(error);
             });
       }
-    },
+      let _this=this
+      setTimeout(function()  {
+
+        _this.answer()//娃娃消失
+
+      }, 2000);
+  }
   }
 }
 </script>
 
 <style scoped>
+.box-card {
+  margin: 2% auto;
+  width: 50%;
+  min-width: 900px;
+  text-align: left;
+}
 
+#dialog_container {
+  overflow: auto;
+  scroll-margin-right: 1px;
+  /*根据屏幕占比设置高度*/
+  min-height: calc(100vh - 300px);
+  max-height: calc(100vh - 300px);
+}
 </style>
