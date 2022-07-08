@@ -27,5 +27,5 @@ If you want the backend to also run alongside the browser instance, just open a 
 ```shell
 python pyflask/api.py
 ```
-
+之前pip install -r requirements.txt可能漏装一些库，运行时按照报错补充
 `Note:` This instance will still not have access to the native node libraries since these are provided through the remote Electron mopdule.
