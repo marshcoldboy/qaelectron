@@ -13,7 +13,7 @@
         />
         <p></p>
         <el-row type="flex">
-          <el-button type="success">发起提问</el-button>
+          <el-button type="success" @click="question">发起提问</el-button>
           <el-button type="success" @click="queryPath = true"
           >查询路径</el-button
           >
@@ -42,7 +42,7 @@
           <tr>
             <td class="text">答案：</td>
             <td class="line">
-              漏油形成油流；漏油速度每滴时间快于5秒且油位低于下限
+              {{ result }}
             </td>
           </tr>
           </tbody>
@@ -53,8 +53,33 @@
 </template>
 
 <script>
+// import axios from "axios";
+
+import axios from "axios";
+
 export default {
-  name: "QA"
+  name: "QA",
+  data(){
+    return{
+      inputQuestion:"请输入您的问题",
+      result:"答案"
+    }
+  },
+  methods: {
+    question: function () {
+      if (this.inputQuestion != "") {
+        let reqObj = { expression: this.inputQuestion };
+        axios
+            .post(`${this.SERVERURL}/qa/question`, reqObj)
+            .then((response) => {
+              this.result = `Result = ${response.data}`;
+            })
+            .catch(function (error) {
+              console.error(error);
+            });
+      }
+    },
+  }
 }
 </script>
 
