@@ -6,14 +6,14 @@
         <p>请输入您的问题：</p>
         <el-input
             class="question"
-            v-model="textarea1"
+            v-model="inputQuestion"
             autosize
             type="textarea"
             placeholder="Please input"
         />
         <p></p>
         <el-row type="flex">
-          <el-button type="success">提问</el-button>
+          <el-button type="success">发起提问</el-button>
           <el-button type="success" @click="queryPath = true"
           >查询路径</el-button
           >
