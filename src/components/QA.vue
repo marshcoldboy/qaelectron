@@ -6,10 +6,10 @@
     <div id="dialog_container">
       <div v-for="oneDialog in text_dialog" :key="oneDialog">
         <el-divider content-position="left">{{ user_name }} --{{ oneDialog.time }}</el-divider>
-        <span id="question_card" style="font-size: 15px">{{ oneDialog.question }}</span>
+        <span id="question_card" style="font-size: 15px">{{ oneDialog.showQuestion }}</span>
         <el-divider content-position="right">回答</el-divider>
         <span id="answer_card">
-              <div style="font-size: 15px" v-html="oneDialog.answer"></div>
+              <div style="font-size: 15px" v-html="oneDialog.showAnswer"></div>
             </span>
       </div>
     </div>
@@ -17,7 +17,7 @@
     <el-input
         type="textarea"
         :autosize="{ minRows: 2, maxRows: 4}"
-        placeholder="尝试输入，上市公司名称，如：格力空调\海澜之家最近上涨吗？平安银行估值怎么样？"
+        placeholder="请输入您的问题"
         v-model="txt_question"
     >
     </el-input>
@@ -34,11 +34,16 @@ export default {
   name: "QA",
   data(){
     return{
-      inputQuestion:"请输入您的问题",
       result:"答案",
       user_name: '默认用户',
       txt_question: '',
       text_dialog: [],
+      res:{
+        is_recommend:0,
+        answer:'',
+        qnum:0,
+        question:[]
+      }
     }
   },
   methods: {
@@ -52,8 +57,9 @@ export default {
     },
     answer: function () {
       const myDate = new Date();
-      this.text_dialog.push({time: myDate.toLocaleString(), question: this.txt_question, answer: this.result})
+      this.text_dialog.push({time: myDate.toLocaleString(), showQuestion: this.txt_question, showAnswer: this.result})
       this.scrollToBottom();
+      this.txt_question=''
     },
     ask_question() {
       // 提问
@@ -62,23 +68,23 @@ export default {
         return
       }
       // 添加一条 问答对话
-      if (this.inputQuestion != "") {
+      if (this.txt_question != "") {
         let reqObj = { expression: this.txt_question };
         axios
             .post(`${this.SERVERURL}/qa/get`, reqObj)
             .then((response) => {
-              this.result = `Result = ${response.data}`;
+              this.result = `${response.data}`;
+              // this.res = response.data;
+              //如果不推荐则回答问题
+              // if(this.res.is_recommend === 0)
+              //如果要推荐则显示推荐问题列表
+              // else if(this.res.is_recommend === 1)
+              this.answer();
             })
             .catch(function (error) {
               console.error(error);
             });
       }
-      let _this=this
-      setTimeout(function()  {
-
-        _this.answer()//娃娃消失
-
-      }, 2000);
   }
   }
 }
