@@ -22,9 +22,31 @@
     >
     </el-input>
     <el-divider content-position="right">
+      <el-button text @click="dialogTableVisible = true"
+      >推荐问题弹窗测试</el-button
+      >
       <el-button @click="ask_question()">提问</el-button>
     </el-divider>
   </el-card>
+  <el-dialog v-model="dialogTableVisible" title="推荐问题">
+    <el-table
+        ref="singleTable"
+        :data="tableData"
+        highlight-current-row
+        @current-change="handleCurrentChange"
+        style="width: 100%">
+      <el-table-column
+          type="index"
+          width="50">
+      </el-table-column>
+      <el-table-column
+          property="recommend_question"
+          label="问题"
+          width="400">
+      </el-table-column>
+    </el-table>
+    <el-button @click="ask_recommend_question()">提问</el-button>
+  </el-dialog>
 </template>
 
 <script>
@@ -34,13 +56,21 @@ export default {
   name: "QA",
   data(){
     return{
-      result:"答案",
+      dialogTableVisible: false,
+      tableData: [{
+        recommend_question: '变压器有哪些类型',
+      }, {
+        recommend_question: '主变的风冷冷却器分为哪些部位',
+      }, {
+        recommend_question: '主变的风冷冷却器控制箱出现漏油速度每滴时间快于5秒，且油位正常的现象，属于那类缺陷',
+      }],
+      currentRow: null,
       user_name: '默认用户',
       txt_question: '',
       text_dialog: [],
       res:{
-        is_recommend:0,
-        answer:'',
+        is_recommend:false,
+        answer:"答案",
         qnum:0,
         question:[]
       }
@@ -57,7 +87,7 @@ export default {
     },
     answer: function () {
       const myDate = new Date();
-      this.text_dialog.push({time: myDate.toLocaleString(), showQuestion: this.txt_question, showAnswer: this.result})
+      this.text_dialog.push({time: myDate.toLocaleString(), showQuestion: this.txt_question, showAnswer: this.res.answer})
       this.scrollToBottom();
       this.txt_question=''
     },
@@ -73,19 +103,31 @@ export default {
         axios
             .post(`${this.SERVERURL}/qa/get`, reqObj)
             .then((response) => {
-              this.result = `${response.data}`;
-              // this.res = response.data;
+              this.res = JSON.parse(response.data);
+              console.log(this.res);
+              // this.answer();
               //如果不推荐则回答问题
-              // if(this.res.is_recommend === 0)
+              if(this.res.is_recommend === false){
+                this.answer();
+              }
               //如果要推荐则显示推荐问题列表
-              // else if(this.res.is_recommend === 1)
-              this.answer();
+              // else if(this.res.is_recommend === 1){
+              //   this.answer();
+              // }
+
             })
             .catch(function (error) {
               console.error(error);
             });
       }
-  }
+  },
+    setCurrent(row) {
+      this.$refs.singleTable.setCurrentRow(row);
+    },
+    handleCurrentChange(val) {
+      this.currentRow = val;
+      console.log(this.currentRow.recommend_question);
+    }
   }
 }
 </script>
@@ -105,4 +147,5 @@ export default {
   min-height: calc(100vh - 300px);
   max-height: calc(100vh - 300px);
 }
+
 </style>
