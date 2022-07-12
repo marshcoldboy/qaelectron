@@ -22,9 +22,6 @@
     >
     </el-input>
     <el-divider content-position="right">
-      <el-button text @click="dialogTableVisible = true"
-      >推荐问题弹窗测试</el-button
-      >
       <el-button @click="ask_question()">提问</el-button>
     </el-divider>
   </el-card>
@@ -57,13 +54,7 @@ export default {
   data(){
     return{
       dialogTableVisible: false,
-      tableData: [{
-        recommend_question: '变压器有哪些类型',
-      }, {
-        recommend_question: '主变的风冷冷却器分为哪些部位',
-      }, {
-        recommend_question: '主变的风冷冷却器控制箱出现漏油速度每滴时间快于5秒，且油位正常的现象，属于那类缺陷',
-      }],
+      tableData: [],
       currentRow: null,
       user_name: '默认用户',
       txt_question: '',
@@ -98,23 +89,26 @@ export default {
         return
       }
       // 添加一条 问答对话
-      if (this.txt_question != "") {
+      if (this.txt_question !== "") {
         let reqObj = { expression: this.txt_question };
         axios
             .post(`${this.SERVERURL}/qa/get`, reqObj)
             .then((response) => {
               this.res = JSON.parse(response.data);
-              console.log(this.res);
+              // console.log(this.res);
               // this.answer();
               //如果不推荐则回答问题
               if(this.res.is_recommend === false){
                 this.answer();
               }
               //如果要推荐则显示推荐问题列表
-              // else if(this.res.is_recommend === 1){
-              //   this.answer();
-              // }
-
+              else if(this.res.is_recommend === true){
+                // console.log(this.res.question)
+                for(var i=0;i<this.res.qnum;i++){
+                  this.tableData.push({recommend_question:this.res.question[i]});
+                }
+                this.dialogTableVisible=true;
+              }
             })
             .catch(function (error) {
               console.error(error);
@@ -126,7 +120,24 @@ export default {
     },
     handleCurrentChange(val) {
       this.currentRow = val;
-      console.log(this.currentRow.recommend_question);
+      // console.log(this.currentRow.recommend_question);
+    },
+    ask_recommend_question() {
+      let reqObj = { expression: this.currentRow.recommend_question };
+      axios
+          .post(`${this.SERVERURL}/qa/get`, reqObj)
+          .then((response) => {
+            this.res = JSON.parse(response.data);
+            // console.log(this.res);
+            //如果不推荐则回答问题
+            if(this.res.is_recommend === false){
+              this.answer();
+              this.dialogTableVisible=false;
+            }
+          })
+          .catch(function (error) {
+            console.error(error);
+          });
     }
   }
 }
