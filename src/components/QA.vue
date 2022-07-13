@@ -104,7 +104,8 @@ export default {
               //如果要推荐则显示推荐问题列表
               else if(this.res.is_recommend === true){
                 // console.log(this.res.question)
-                for(var i=0;i<this.res.qnum;i++){
+                this.tableData.splice(0);
+                for(let i=0; i<this.res.qnum; i++){
                   this.tableData.push({recommend_question:this.res.question[i]});
                 }
                 this.dialogTableVisible=true;
