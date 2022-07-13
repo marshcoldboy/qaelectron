@@ -5,9 +5,9 @@
     </template>
     <div id="dialog_container">
       <div v-for="oneDialog in text_dialog" :key="oneDialog">
-        <el-divider content-position="left">{{ user_name }} --{{ oneDialog.time }}</el-divider>
+        <el-divider content-position="left">{{ user_name }} {{ oneDialog.time }}</el-divider>
         <span id="question_card" style="font-size: 15px">{{ oneDialog.showQuestion }}</span>
-        <el-divider content-position="right">回答</el-divider>
+        <el-divider content-position="right">电力系统智能助理</el-divider>
         <span id="answer_card">
               <div style="font-size: 15px" v-html="oneDialog.showAnswer"></div>
             </span>
@@ -56,7 +56,7 @@ export default {
       dialogTableVisible: false,
       tableData: [],
       currentRow: null,
-      user_name: '默认用户',
+      user_name: '您',
       txt_question: '',
       text_dialog: [],
       res:{
