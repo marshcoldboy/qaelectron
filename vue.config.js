@@ -33,14 +33,16 @@ module.exports = {
           extraResources: [{ from: "./src/pyflaskdist/api" }],
         },
         nsis: {
-          createDesktopShortcut: "always",
-          oneClick: true,
+          oneClick: false,
           deleteAppDataOnUninstall: true,
+          allowElevation: true,
+          allowToChangeInstallationDirectory: true,// 允许修改安装目录
           installerIcon: "./src/assets/app-icons/windowsAppIcon.ico",
+          createDesktopShortcut: true,
         },
         publish: {
           provider: "github",
-          repository: "https://github.com/megasanjay/electron-vue3-flask.git",
+          repository: "https://github.com/marshcoldboy/qaelectron.git",
         },
       },
     },

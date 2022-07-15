@@ -68,10 +68,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/megasanjay/electron-vue3-flask.git"
+    "url": "https://github.com/marshcoldboy/qaelectron.git"
   },
   "keywords": [],
-  "author": "Sanjay Soundarajan",
+  "author": "Liao Chencheng",
   "license": "MIT",
   "engines": {
     "node": "^16.13.0"
