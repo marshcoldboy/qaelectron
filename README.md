@@ -36,3 +36,6 @@ To now build the final electron application you can use the following command:
 yarn electron:build
 ```
 This will create the installer needed to share your application. The final installer will be saved in the dist_electron folder.
+绿色版：win-unpacked
+安装：vue-electron-flask Setup 1.0.1.exe
+其他文件无需理会
