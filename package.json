@@ -1,5 +1,5 @@
 {
-  "name": "vue-electron-flask",
+  "name": "electric-qa-system",
   "version": "1.0.1",
   "description": "Simple template for combining Electron with Vue3 and Flask",
   "private": true,

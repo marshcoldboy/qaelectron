@@ -22,6 +22,7 @@
     >
     </el-input>
     <el-divider content-position="right">
+      <el-button @click="dialogSampleVisible=true">问题样例</el-button>
       <el-button @click="ask_question()">提问</el-button>
     </el-divider>
   </el-card>
@@ -44,6 +45,29 @@
     </el-table>
     <el-button @click="ask_recommend_question()">提问</el-button>
   </el-dialog>
+  <el-dialog v-model="dialogSampleVisible" title="问题样例">
+    <el-table
+        ref="singleTable"
+        :data="sampleData"
+        highlight-current-row
+        @current-change="handleCurrentChange"
+        style="width: 100%">
+      <el-table-column
+          type="index"
+          width="50">
+      </el-table-column>
+      <el-table-column
+          property="question_type"
+          label="问题类型"
+          width="100">
+      </el-table-column>
+      <el-table-column
+          property="sample_question"
+          label="问题"
+          width="400">
+      </el-table-column>
+    </el-table>
+  </el-dialog>
 </template>
 
 <script>
@@ -53,8 +77,31 @@ export default {
   name: "QA",
   data(){
     return{
+      dialogSampleVisible: false,
       dialogTableVisible: false,
       tableData: [],
+      sampleData: [
+        {
+          question_type:'包含',
+          sample_question:'变电一次设备有哪些类型'
+        },
+        {
+          question_type:'包含',
+          sample_question:'主变的冷却器系统有哪些类型'
+        },
+        {
+          question_type:'包含',
+          sample_question:'主变的风冷冷却器控制箱有哪些常见缺陷'
+        },
+        {
+          question_type:'分级：危急',
+          sample_question:'主变的风冷冷却器控制箱漏油，如何界定为危急缺陷'
+        },
+        {
+          question_type:'属于',
+          sample_question:'主变的风冷冷却器控制箱出现漏油速度每滴时间快于5秒，且油位正常的现象，属于那类缺陷'
+        }
+      ],
       currentRow: null,
       user_name: '您',
       txt_question: '',
